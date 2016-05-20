@@ -35,3 +35,9 @@ BOARD_HAS_NO_SELECT_BUTTON := true
 # ADB daemon must be explicitly included in the recovery.
 PRODUCT_PACKAGES += \
 	adbd
+
+# Although CWM reads the partition configuration from "/etc/recovery.fstab",
+# Vold reads the partition configuration from "/fstab.{ro.hardware}". Therefore,
+# the recovery.fstab file must be copied to the path expected by Vold.
+PRODUCT_COPY_FILES := \
+	device/fairphone/fp1/recovery.fstab:root/fstab.mt6589
