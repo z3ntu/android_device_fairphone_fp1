@@ -22,8 +22,8 @@
 # recovery.fstab the functionality of install-recovery.sh is not available for
 # the system images built based on this file.
 #
-# /dev/bootimg                             /boot               emmc    defaults    defaults
-# /dev/recovery                            /recovery           emmc    defaults    defaults
+# /dev/bootimg                             /boot        emmc    defaults    defaults
+# /dev/recovery                            /recovery    emmc    defaults    defaults
 
 # Although the behavior of /dev/misc is the same as /dev/bootimg and
 # /dev/recovery, the way that CWM uses it poses no problems. In this case, a
@@ -34,7 +34,7 @@
 # by the dum-char kernel driver to write the environment variables in the misc
 # partition, so it is safe to include the /misc entry in the recovery.fstab.
 
-/dev/misc                                /misc               emmc    defaults    defaults
+/dev/misc                                /misc        emmc    defaults    defaults
 
 # Unlike boot, recovery and misc, the partitions for cache, data, sdcard and
 # system are proper partitions. Therefore, although they also have /dev/XXX
@@ -44,16 +44,20 @@
 # The nosuid and nodev options are not set for the /system partition following
 # the options used in the official Fairphone image.
 
-/dev/block/mmcblk0p6                     /cache              ext4    nosuid,nodev,noatime,discard    wait,check,nonremovable
-/dev/block/mmcblk0p7                     /data               ext4    nosuid,nodev,noatime,discard    wait,check,nonremovable
-/dev/block/mmcblk0p5                     /system             ext4    noatime,discard    wait,check,nonremovable
+/dev/block/mmcblk0p6                     /cache       ext4    nosuid,nodev,noatime,discard    wait,check,nonremovable
+/dev/block/mmcblk0p7                     /data        ext4    nosuid,nodev,noatime,discard    wait,check,nonremovable
+/dev/block/mmcblk0p5                     /system      ext4    noatime,discard    wait,check,nonremovable
 
 # Vold provides other features besides managing removable partitions, like
 # sharing the partition through USB. Therefore, the internal SD card partition
 # is configured to be managed also by Vold despite being non removable.
+#
+# From 4.4, Vold ignores the mount points defined in the fstab and mounts the
+# volumes in its own predefined paths (in the case of the recovery,
+# "/storage/<label>"). Therefore, the mount points should be set to "auto".
 
-/devices/platform/mtk-msdc.0/mmc_host    /storage/sdcard0    vfat    defaults    voldmanaged=internalsd:8,nonremovable
+/devices/platform/mtk-msdc.0/mmc_host    auto         vfat    defaults    voldmanaged=internalsd:8,nonremovable
 
-/devices/platform/mtk-msdc.1/mmc_host    /storage/sdcard1    auto    defaults    voldmanaged=externalsd:auto
+/devices/platform/mtk-msdc.1/mmc_host    auto         auto    defaults    voldmanaged=externalsd:auto
 
-/devices/platform/mt_usb                 /storage/usbotg     auto    defaults    voldmanaged=usbotg:auto
+/devices/platform/mt_usb                 auto         auto    defaults    voldmanaged=usbotg:auto
