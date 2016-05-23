@@ -55,8 +55,11 @@
 # From 4.4, Vold ignores the mount points defined in the fstab and mounts the
 # volumes in its own predefined paths (in the case of the recovery,
 # "/storage/<label>"). Therefore, the mount points should be set to "auto".
+#
+# CWM expects the primary storage to be mounted in "/storage/sdcard0", so the
+# label for the internal SD card must be "sdcard0".
 
-/devices/platform/mtk-msdc.0/mmc_host    auto         vfat    defaults    voldmanaged=internalsd:8,nonremovable
+/devices/platform/mtk-msdc.0/mmc_host    auto         vfat    defaults    voldmanaged=sdcard0:8,nonremovable
 
 /devices/platform/mtk-msdc.1/mmc_host    auto         auto    defaults    voldmanaged=externalsd:auto
 
