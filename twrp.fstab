@@ -1,34 +1,14 @@
 # TWRP uses its own partition configuration file with a TWRP-specific format.
 #
-# Unlike CWM, TWRP can safely backup and restore the EMMC partitions, as it
-# queries "/proc/dumchar_info" for the size of the partitions (see
-# "recovery.fstab" for further information about the problems).
-#
-# However, flashing is not totally safe in the EMMC partitions. Although the
-# size of the image to be flashed is checked against the size provided by
-# "/proc/dumchar_info" before flashing it that does not mean that the size of
-# the actual data to be flashed fits inside the partition. Sparse images can
-# expand to several times their file size, and while they are typically used for
-# cache, data or system images, accidentally flashing a sparse image on one of
-# the EMMC partitions could silently overwrite other partitions (depending on
-# the size of the image and its expanded data). Therefore, flashing is disabled
-# for all EMMC partitions.
+# This fstab MUST be used on a Fairphone 1 kernel with fixes to the dumchar
+# driver for seeking, reading and writing; otherwise, catastrophic results could
+# occur (for further information, see the initial version of this file and
+# recovery.fstab).
 
-/boot          emmc        /dev/bootimg                flags=flashimg=n
+/boot          emmc        /dev/bootimg                null
+/recovery      emmc        /dev/recovery               null
 
-# As it can not be flashed and it does not make much sense to back up and
-# restore it (in fact backups are disabled by default for the recovery partition
-# in TWRP unless explicitly overriden in fstab) the recovery partition is of no
-# use in TWRP. Therefore, it is totally disabled.
-
-# /recovery      emmc        /dev/recovery               flags=flashimg=n
-
-# It is not really necessary to explicitly set that misc can not be flashed, as
-# it is the default value for all partitions not overriden explicitly in the
-# fstab or by TWRP itself (like it does for the boot partition), but it is set
-# just for consistency.
-
-/misc          emmc        /dev/misc                   flags=flashimg=n
+/misc          emmc        /dev/misc                   null
 
 # Unlike boot, recovery and misc, the partitions for cache, data, sdcard and
 # system are proper partitions. Therefore, although they also have /dev/XXX
