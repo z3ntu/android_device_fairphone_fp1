@@ -1,45 +1,15 @@
-# /dev/bootimg and /dev/recovery make possible to read and write from the boot
-# and recovery areas. However, not only do they not prevent from reading and
-# writing past their length, but they do not even report their size or an EOF
-# when reading and reaching the end of their areas.
-#
-# CWM expects that the EMMC partitions associated to /boot and /recovery report
-# their size and an EOF when reaching the end of the areas (in
-# mmc_raw_dump_internal()). However, as the size is returned as -1 and no EOF is
-# reported the backup would copy the whole internal memory (from the start of
-# the boot and recovery partitions) or, if EOF were not even reported when
-# reaching the end of the device itself, enter in an infinite loop (I have not
-# checked whether EOF is reported when reaching the end of the device or not).
-# In any case, bad things would happen if /boot and /recovery were included in
-# the recovery.fstab, so they are omitted.
-#
-# Unfortunately, /boot and /recovery entries are also used by
-# build/tools/releasetools/ota_from_target_files to generate install-recovery.sh
-# with the appropriate values; in that case there would be no problem with the
-# behavior of /dev/bootimg and /dev/recovery, as the install-recovery.sh
-# provides the size of the images to be written based on the product
-# configuration. However, as /boot and /recovery entries are omitted from the
-# recovery.fstab the functionality of install-recovery.sh is not available for
-# the system images built based on this file.
-#
-# /dev/bootimg                             /boot        emmc    defaults    defaults
-# /dev/recovery                            /recovery    emmc    defaults    defaults
+# This fstab MUST be used on a Fairphone 1 kernel with fixes to the dumchar
+# driver for seeking, reading and writing; otherwise, catastrophic results are
+# expected (for further information, see the initial version of this file).
 
-# Although the behavior of /dev/misc is the same as /dev/bootimg and
-# /dev/recovery, the way that CWM uses it poses no problems. In this case, a
-# specific amount of bytes (the size of the bootloader_message struct) is read
-# from and written to the start of the EMMC partition associated to /misc (to be
-# able to communicate between the recovery and the bootloader). Moreover, the
-# size of the bootloader_message struct is smaller than the CFG_ENV_OFFSET used
-# by the dum-char kernel driver to write the environment variables in the misc
-# partition, so it is safe to include the /misc entry in the recovery.fstab.
+/dev/bootimg                             /boot        emmc    defaults    defaults
+/dev/recovery                            /recovery    emmc    defaults    defaults
 
 /dev/misc                                /misc        emmc    defaults    defaults
 
 # Unlike boot, recovery and misc, the partitions for cache, data, sdcard and
 # system are proper partitions. Therefore, although they also have /dev/XXX
-# devices, the partition devices are the ones used (otherwise, they would have
-# the same problems explained above).
+# devices, the partition devices are the ones used.
 
 # The nosuid and nodev options are not set for the /system partition following
 # the options used in the official Fairphone image.
