@@ -14,4 +14,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 PRODUCT_MAKEFILES := \
-	$(LOCAL_DIR)/cwm_fp1.mk
+	$(LOCAL_DIR)/cwm_fp1.mk \
+	$(LOCAL_DIR)/twrp_fp1.mk

@@ -1,0 +1,61 @@
+# TWRP uses its own partition configuration file with a TWRP-specific format.
+#
+# Unlike CWM, TWRP can safely backup and restore the EMMC partitions, as it
+# queries "/proc/dumchar_info" for the size of the partitions (see
+# "recovery.fstab" for further information about the problems).
+#
+# However, flashing is not totally safe in the EMMC partitions. Although the
+# size of the image to be flashed is checked against the size provided by
+# "/proc/dumchar_info" before flashing it that does not mean that the size of
+# the actual data to be flashed fits inside the partition. Sparse images can
+# expand to several times their file size, and while they are typically used for
+# cache, data or system images, accidentally flashing a sparse image on one of
+# the EMMC partitions could silently overwrite other partitions (depending on
+# the size of the image and its expanded data). Therefore, flashing is disabled
+# for all EMMC partitions.
+
+/boot          emmc        /dev/bootimg                flags=flashimg=n
+
+# As it can not be flashed and it does not make much sense to back up and
+# restore it (in fact backups are disabled by default for the recovery partition
+# in TWRP unless explicitly overriden in fstab) the recovery partition is of no
+# use in TWRP. Therefore, it is totally disabled.
+
+# /recovery      emmc        /dev/recovery               flags=flashimg=n
+
+# It is not really necessary to explicitly set that misc can not be flashed, as
+# it is the default value for all partitions not overriden explicitly in the
+# fstab or by TWRP itself (like it does for the boot partition), but it is set
+# just for consistency.
+
+/misc          emmc        /dev/misc                   flags=flashimg=n
+
+# Unlike boot, recovery and misc, the partitions for cache, data, sdcard and
+# system are proper partitions. Therefore, although they also have /dev/XXX
+# devices, the partition devices are the ones used.
+
+# The nosuid and nodev options are not set for the /system partition following
+# the options used in the official Fairphone image.
+
+/cache         ext4        /dev/block/mmcblk0p6        flags=fsflags="nosuid,nodev,noatime"
+/data          ext4        /dev/block/mmcblk0p7        flags=fsflags="nosuid,nodev,noatime"
+/system        ext4        /dev/block/mmcblk0p5        flags=fsflags="noatime"
+
+# Besides being automatically marked as a storage partition, the /internal_sd
+# partition is also automatically marked as the settings partition, and
+# therefore is the one from where the ".android_secure" directory is gotten.
+
+/internal_sd   vfat        /dev/block/mmcblk0p8        flags=fsflags="noatime"
+
+/external_sd   auto        /dev/block/mmcblk1p1        flags=fsflags="noatime"
+
+/usb-otg       auto        /dev/block/sda1             flags=removable;storage
+
+# Although there are other partitions in the device they are not taken into
+# account, as they provide no value for TWRP. For example, the contents of
+# protect_f and protect_s are automatically regenerated when needed by some
+# binaries executed when Android is started (and if they are not then even
+# restoring a backup may not be enough to get the telephony working again, as
+# the IMEI may have been erased from the modem, which requires some extra
+# fixing). Other partitions, like pro_info, are even more obscure in their
+# meaning and function, so better not mess with them.
