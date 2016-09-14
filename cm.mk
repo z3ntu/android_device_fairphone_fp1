@@ -98,3 +98,6 @@ PRODUCT_PACKAGE_OVERLAYS += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.sf.lcd_density=240
+
+PRODUCT_PACKAGES += \
+	gralloc.fp1
