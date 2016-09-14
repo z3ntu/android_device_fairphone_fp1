@@ -1,0 +1,5 @@
+dev_mount   internalsd   /storage/sdcard0   8      /devices/platform/mtk-msdc.0/mmc_host   nonremovable
+
+dev_mount   externalsd   /storage/sdcard1   auto   /devices/platform/mtk-msdc.1/mmc_host
+
+dev_mount   usbotg       /storage/usbotg    auto   /devices/platform/mt_usb
