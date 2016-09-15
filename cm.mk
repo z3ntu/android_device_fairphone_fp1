@@ -101,3 +101,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 PRODUCT_PACKAGES += \
 	gralloc.fp1
+
+# The OpenGL ES library being used is libagl, which only supports OpenGL ES 1.0.
+# The higher 16 bits represent the major number and the lower 16 bits represent
+# the minor number.
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.opengles.version=65536
