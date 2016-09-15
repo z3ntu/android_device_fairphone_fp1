@@ -107,3 +107,9 @@ PRODUCT_PACKAGES += \
 # the minor number.
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.opengles.version=65536
+
+# Explicitly declare that a software implementation of OpenGL ES is being used
+# to tweak the system accordingly.
+# This is not a standard property; the system must be patched to support it.
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.softwaregl=true
