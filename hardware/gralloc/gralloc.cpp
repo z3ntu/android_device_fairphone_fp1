@@ -205,7 +205,9 @@ static int gralloc_alloc(alloc_device_t* dev,
 
     size_t size, stride;
 
-    int align = 4;
+    // MediaTek framebuffer kernel driver expects rows to be aligned to 32
+    // bytes.
+    int align = 32;
     int bpp = 0;
     switch (format) {
         case HAL_PIXEL_FORMAT_RGBA_8888:
