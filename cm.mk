@@ -113,3 +113,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # This is not a standard property; the system must be patched to support it.
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.softwaregl=true
+
+PRODUCT_PACKAGES += \
+	lights.fp1
