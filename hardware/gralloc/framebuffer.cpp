@@ -171,6 +171,29 @@ int mapFrameBufferLocked(struct private_module_t* module)
     info.yoffset = 0;
     info.activate = FB_ACTIVATE_NOW;
 
+    // This module is expected to be used with libagl, the software OpenGL ES
+    // library from Android. For 32-bit pixel formats libagl only supports RGB
+    // with offsets R=0, G=8 and B=16, but the MediaTek framebuffer kernel
+    // driver in practice only supports RGB with offsets R=16, G=8 and B=0.
+    // However, as both support 16-bit RGB with offsets R=11, G=5 and B=0 the
+    // framebuffer is forced to that pixel format. Otherwise, red and blue
+    // channels would be swapped and therefore colors would be incorrect.
+    if (info.bits_per_pixel > 16) {
+        struct fb_var_screeninfo backupInfo = info;
+
+        info.bits_per_pixel = 16;
+        info.red.offset    = 11;   info.red.length    = 5;
+        info.green.offset  = 5;    info.green.length  = 6;
+        info.blue.offset   = 0;    info.blue.length   = 5;
+        info.transp.offset = 0;    info.transp.length = 0;
+
+        if (ioctl(fd, FBIOPUT_VSCREENINFO, &info) == -1) {
+            info = backupInfo;
+
+            ALOGW("FBIOPUT_VSCREENINFO failed, could not force RGB 565 format");
+        }
+    }
+
     /*
      * Request NUM_BUFFERS screens (at lest 2 for page flipping)
      */
