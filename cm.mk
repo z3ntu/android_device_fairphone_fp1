@@ -104,6 +104,14 @@ PRODUCT_COPY_FILES += \
 # the Fairphone 1.
 BOARD_VOLD_MAX_PARTITIONS := 8
 
+# In CyanogenMod, Vold supports a custom LUN file path besides the default one
+# ("/sys/class/android_usb/android%d/f_mass_storage/lun/file"). This custom
+# path, which like the default one is a pattern with a replaceable digit, is
+# necessary to be able to share both the internal and the external SD card; the
+# default LUN pattern matches a LUN file when the LUN number 0 is used, and the
+# custom LUN pattern matches a LUN file when the LUN number 1 is used.
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/class/android_usb/android0/f_mass_storage/lun%d/file
+
 PRODUCT_PACKAGE_OVERLAYS += \
 	device/fairphone/fp1/overlay
 
