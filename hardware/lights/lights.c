@@ -44,29 +44,44 @@ static struct light_state_t g_notification;
 static struct light_state_t g_battery;
 static struct light_state_t g_attention;
 
-char const*const RED_LED_FILE
+char const*const RED_LED_BRIGHTNESS_FILE
         = "/sys/class/leds/red/brightness";
 
-char const*const GREEN_LED_FILE
+char const*const RED_LED_TRIGGER_FILE
+        = "/sys/class/leds/red/trigger";
+
+char const*const RED_LED_DELAY_ON_FILE
+        = "/sys/class/leds/red/delay_on";
+
+char const*const RED_LED_DELAY_OFF_FILE
+        = "/sys/class/leds/red/delay_off";
+
+char const*const GREEN_LED_BRIGHTNESS_FILE
         = "/sys/class/leds/green/brightness";
 
-char const*const BLUE_LED_FILE
+char const*const GREEN_LED_TRIGGER_FILE
+        = "/sys/class/leds/green/trigger";
+
+char const*const GREEN_LED_DELAY_ON_FILE
+        = "/sys/class/leds/green/delay_on";
+
+char const*const GREEN_LED_DELAY_OFF_FILE
+        = "/sys/class/leds/green/delay_off";
+
+char const*const BLUE_LED_BRIGHTNESS_FILE
         = "/sys/class/leds/blue/brightness";
+
+char const*const BLUE_LED_TRIGGER_FILE
+        = "/sys/class/leds/blue/trigger";
+
+char const*const BLUE_LED_DELAY_ON_FILE
+        = "/sys/class/leds/blue/delay_on";
+
+char const*const BLUE_LED_DELAY_OFF_FILE
+        = "/sys/class/leds/blue/delay_off";
 
 char const*const LCD_FILE
         = "/sys/class/leds/lcd-backlight/brightness";
-
-char const*const LED_FREQ_FILE
-        = "/sys/class/leds/red/device/grpfreq";
-
-char const*const LED_PWM_FILE
-        = "/sys/class/leds/red/device/grppwm";
-
-char const*const LED_BLINK_FILE
-        = "/sys/class/leds/red/device/blink";
-
-char const*const LED_LOCK_UPDATE_FILE
-        = "/sys/class/leds/red/device/lock";
 
 /**
  * device methods
@@ -95,6 +110,26 @@ write_int(char const* path, int value)
     } else {
         if (already_warned == 0) {
             ALOGE("write_int failed to open %s\n", path);
+            already_warned = 1;
+        }
+        return -errno;
+    }
+}
+
+static int
+write_string(char const* path, const char* string)
+{
+    int fd;
+    static int already_warned = 0;
+
+    fd = open(path, O_RDWR);
+    if (fd >= 0) {
+        int amt = write(fd, string, strlen(string));
+        close(fd);
+        return amt == -1 ? -errno : 0;
+    } else {
+        if (already_warned == 0) {
+            ALOGE("write_string failed to open %s\n", path);
             already_warned = 1;
         }
         return -errno;
@@ -135,7 +170,6 @@ set_notification_led_locked(struct light_device_t* dev,
         struct light_state_t const* state)
 {
     int red, green, blue;
-    int blink, freq, pwm;
     int onMS, offMS;
 
     switch (state->flashMode) {
@@ -155,39 +189,40 @@ set_notification_led_locked(struct light_device_t* dev,
     blue = state->color & 0xFF;
 
     if (onMS > 0 && offMS > 0 && is_lit(state)) {
-        int totalMS = onMS + offMS;
+        // The kernel does not seem to provide a system to blink several LEDs in
+        // synchronization. In order to try to minimize the phase difference
+        // between several blinking LEDs to get a combined color each stage of
+        // the blink setup is performed for all the LEDs together, instead of
+        // performing all the stages together for each LED, as the blinking
+        // starts when the "delay_off" attribute is set.
+        //
+        // Unfortunately, even with this approach, the result is far from
+        // correct...
 
-        // the freq value must be set as period/50
-        freq = totalMS / 50;
+        if (red != 0) write_string(RED_LED_TRIGGER_FILE, "timer");
+        if (green != 0) write_string(GREEN_LED_TRIGGER_FILE, "timer");
+        if (blue != 0) write_string(BLUE_LED_TRIGGER_FILE, "timer");
 
-        // pwm specifies the ratio of ON versus OFF
-        // pwm = 0 -> always off
-        // pwm = 255 => always on
-        pwm = (onMS * 255) / totalMS;
+        if (red != 0) write_int(RED_LED_DELAY_ON_FILE, onMS);
+        if (green != 0) write_int(GREEN_LED_DELAY_ON_FILE, onMS);
+        if (blue != 0) write_int(BLUE_LED_DELAY_ON_FILE, onMS);
 
-        blink = 1;
+        if (red != 0) write_int(RED_LED_DELAY_OFF_FILE, offMS);
+        if (green != 0) write_int(GREEN_LED_DELAY_OFF_FILE, offMS);
+        if (blue != 0) write_int(BLUE_LED_DELAY_OFF_FILE, offMS);
     } else {
-        blink = 0;
-        freq = 0;
-        pwm = 0;
+        write_string(RED_LED_TRIGGER_FILE, "none");
+        write_int(RED_LED_BRIGHTNESS_FILE, red);
+
+        write_string(GREEN_LED_TRIGGER_FILE, "none");
+        write_int(GREEN_LED_BRIGHTNESS_FILE, green);
+
+        write_string(BLUE_LED_TRIGGER_FILE, "none");
+        write_int(BLUE_LED_BRIGHTNESS_FILE, blue);
     }
 
     ALOGV("%s: red %d green %d blue %d onMS %d offMS %d",
             __func__, red, green, blue, onMS, offMS);
-
-    write_int(LED_LOCK_UPDATE_FILE, 1); // for LED On/Off synchronization
-
-    write_int(RED_LED_FILE, red);
-    write_int(GREEN_LED_FILE, green);
-    write_int(BLUE_LED_FILE, blue);
-
-    if (blink) {
-        write_int(LED_FREQ_FILE, freq);
-        write_int(LED_PWM_FILE, pwm);
-    }
-    write_int(LED_BLINK_FILE, blink);
-
-    write_int(LED_LOCK_UPDATE_FILE, 0);
 
     return 0;
 }

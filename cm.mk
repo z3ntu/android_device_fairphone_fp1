@@ -81,6 +81,7 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
 	device/fairphone/fp1/rootdir/init.mt6589.rc:root/init.mt6589.rc \
+	device/fairphone/fp1/rootdir/ueventd.mt6589.rc:root/ueventd.mt6589.rc \
 	device/fairphone/fp1/rootdir/fstab.mt6589:root/fstab.mt6589
 
 PRODUCT_COPY_FILES += \
