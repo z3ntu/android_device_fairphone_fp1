@@ -82,8 +82,8 @@ struct private_module_t HAL_MODULE_INFO_SYM = {
             version_major: 1,
             version_minor: 0,
             id: GRALLOC_HARDWARE_MODULE_ID,
-            name: "Graphics Memory Allocator Module",
-            author: "The Android Open Source Project",
+            name: "Graphics Memory Allocator Module for Fairphone 1",
+            author: "The Android Open Source Project, Daniel Calviño Sánchez",
             methods: &gralloc_module_methods
         },
         registerBuffer: gralloc_register_buffer,
