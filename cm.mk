@@ -83,13 +83,6 @@ PRODUCT_COPY_FILES += \
 	device/fairphone/fp1/rootdir/init.mt6589.rc:root/init.mt6589.rc \
 	device/fairphone/fp1/rootdir/fstab.mt6589:root/fstab.mt6589
 
-# The BOARD_VOLD_MAX_PARTITIONS parameter defines the maximum number of
-# partitions that Vold can handle in a disk, no matter whether they are included
-# in vold.fstab or not. By default Vold handles only four partitions, so it has
-# to be increased to eight for Vold to handle the internal SDCard partition in
-# the Fairphone 1.
-BOARD_VOLD_MAX_PARTITIONS := 8
-
 PRODUCT_PACKAGE_OVERLAYS += \
 	device/fairphone/fp1/overlay
 
