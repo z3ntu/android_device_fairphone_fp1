@@ -13,9 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Inherit CyanogenMod configuration based on phone tech (GSM or CDMA).
-$(call inherit-product, vendor/cm/config/gsm.mk)
-
 # TARGET_SCREEN_HEIGHT and TARGET_SCREEN_WIDTH must be set before inheriting
 # from "vendor/cm/config/common.mk", which happens implicitly when inheriting
 # from "vendor/cm/config/common_full_phone.mk", as they are used to select the
