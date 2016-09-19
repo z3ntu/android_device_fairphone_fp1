@@ -83,9 +83,6 @@ PRODUCT_COPY_FILES += \
 	device/fairphone/fp1/rootdir/init.mt6589.rc:root/init.mt6589.rc \
 	device/fairphone/fp1/rootdir/fstab.mt6589:root/fstab.mt6589
 
-PRODUCT_COPY_FILES += \
-	device/fairphone/fp1/rootdir/etc/vold.fstab:system/etc/vold.fstab
-
 # The BOARD_VOLD_MAX_PARTITIONS parameter defines the maximum number of
 # partitions that Vold can handle in a disk, no matter whether they are included
 # in vold.fstab or not. By default Vold handles only four partitions, so it has
