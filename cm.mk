@@ -27,7 +27,7 @@ TARGET_SCREEN_WIDTH := 540
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
 # Inherit common Android Open Source Project configuration for phones.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 
 # Inherit Dalvik heap configuration for a standard high density phone.
 $(call inherit-product, frameworks/native/build/phone-hdpi-dalvik-heap.mk)
