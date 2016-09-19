@@ -1,3 +1,7 @@
+import /init.mt6589.usb.rc
+
+
+
 on init
     mkdir /storage/sdcard0 0000 system system
     mkdir /storage/sdcard1 0000 system system
