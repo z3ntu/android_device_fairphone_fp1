@@ -98,3 +98,18 @@ PRODUCT_PACKAGE_OVERLAYS += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.sf.lcd_density=240
+
+PRODUCT_PACKAGES += \
+	gralloc.fp1
+
+# The OpenGL ES library being used is libagl, which only supports OpenGL ES 1.0.
+# The higher 16 bits represent the major number and the lower 16 bits represent
+# the minor number.
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.opengles.version=65536
+
+# Explicitly declare that a software implementation of OpenGL ES is being used
+# to tweak the system accordingly.
+# This is not a standard property; the system must be patched to support it.
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.softwaregl=true
