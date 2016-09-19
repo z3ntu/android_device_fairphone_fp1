@@ -26,6 +26,15 @@ TARGET_SCREEN_WIDTH := 540
 # Inherit common CyanogenMod configuration for phones.
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
+# The default system/core/rootdir/init.usb.rc has a bug when setting the
+# "persist.sys.usb.config" property to "none". Due to this a fixed init.usb.rc
+# is used instead.
+#
+# It has to be set before inheriting from full_base_telephony.mk to override the
+# copy of the default one.
+PRODUCT_COPY_FILES += \
+	device/fairphone/fp1/rootdir/init.usb.rc.fixed:root/init.usb.rc
+
 # Inherit common Android Open Source Project configuration for phones.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
