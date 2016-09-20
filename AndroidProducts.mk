@@ -13,5 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# It is not really needed to specify "cm.mk" here, as the CyanogenMod build
+# system finds it automatically, but just for consistency.
 PRODUCT_MAKEFILES := \
-	$(LOCAL_DIR)/cwm_fp1.mk
+	$(LOCAL_DIR)/cwm_fp1.mk \
+	$(LOCAL_DIR)/cm.mk
