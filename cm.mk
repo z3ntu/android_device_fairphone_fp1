@@ -51,6 +51,16 @@ TARGET_NO_RECOVERY := true
 PRODUCT_COPY_FILES += \
 	device/fairphone/fp1/recovery.fstab:recovery/root/etc/recovery.fstab
 
+# The fstab version is used by the release tools in "build/tools/releasetools"
+# to know how to parse the "recovery.fstab" file.
+#
+# The value set here does not usually take effect, though, as the Android.mk of
+# the recovery typically sets it too. As the Android.mk of the recovery is
+# automatically processed after this Makefile along with the rest of Android.mk
+# files in the source tree the value set in that file overrides the value set
+# here. It is set here, though, just in case it is not set by the recovery.
+RECOVERY_FSTAB_VERSION := 2
+
 # Redefining MKBOOTIMG in AndroidBoard.mk is enough to build a recovery image
 # using a custom "mkbootimg" command. Unfortunately, that approach does not work
 # when using the "otapackage" make target, as the "ota_from_target_files" script
