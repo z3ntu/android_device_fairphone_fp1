@@ -1,8 +1,8 @@
 diff --git a/core/java/android/app/ActivityManager.java b/core/java/android/app/ActivityManager.java
-index e4e0d8e..e5c0e87 100644
+index a29c839..e76ee97 100644
 --- a/core/java/android/app/ActivityManager.java
 +++ b/core/java/android/app/ActivityManager.java
-@@ -381,25 +381,29 @@ public class ActivityManager {
+@@ -382,25 +382,29 @@ public class ActivityManager {
       * @hide
       */
      static public boolean isHighEndGfx() {
@@ -49,11 +49,26 @@ index e4e0d8e..e5c0e87 100644
      }
  
      /**
+diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
+index 6c9f2d1..947f1de 100644
+--- a/core/java/android/os/Build.java
++++ b/core/java/android/os/Build.java
+@@ -467,6 +467,10 @@ public class Build {
+         return SystemProperties.get(TelephonyProperties.PROPERTY_BASEBAND_VERSION, null);
+     }
+ 
++    public static boolean isSoftwareGl() {
++        return SystemProperties.getBoolean("ro.softwaregl", false);
++    }
++
+     private static String getString(String property) {
+         return SystemProperties.get(property, UNKNOWN);
+     }
 diff --git a/core/java/android/view/HardwareRenderer.java b/core/java/android/view/HardwareRenderer.java
-index 5b7a5af..aa22d97 100644
+index 8308459..999c8e6 100644
 --- a/core/java/android/view/HardwareRenderer.java
 +++ b/core/java/android/view/HardwareRenderer.java
-@@ -166,14 +166,14 @@ public abstract class HardwareRenderer {
+@@ -191,14 +191,14 @@ public abstract class HardwareRenderer {
       * 
       * @hide
       */
@@ -70,10 +85,14 @@ index 5b7a5af..aa22d97 100644
  
      /**
       * Number of frames to profile.
-@@ -1436,20 +1436,28 @@ public abstract class HardwareRenderer {
+@@ -1768,22 +1768,30 @@ public abstract class HardwareRenderer {
  
          @Override
          int[] getConfig(boolean dirtyRegions) {
+-            //noinspection PointlessBooleanExpression,ConstantConditions
+-            final int stencilSize = GLES20Canvas.getStencilSize();
+-            final int swapBehavior = dirtyRegions ? EGL14.EGL_SWAP_BEHAVIOR_PRESERVED_BIT : 0;
+-
 -            return new int[] {
 -                    EGL_RENDERABLE_TYPE, EGL14.EGL_OPENGL_ES2_BIT,
 -                    EGL_RED_SIZE, 8,
@@ -82,10 +101,8 @@ index 5b7a5af..aa22d97 100644
 -                    EGL_ALPHA_SIZE, 8,
 -                    EGL_DEPTH_SIZE, 0,
 -                    EGL_CONFIG_CAVEAT, EGL_NONE,
--                    // TODO: Find a better way to choose the stencil size
--                    EGL_STENCIL_SIZE, mShowOverdraw ? GLES20Canvas.getStencilSize() : 0,
--                    EGL_SURFACE_TYPE, EGL_WINDOW_BIT |
--                            (dirtyRegions ? EGL14.EGL_SWAP_BEHAVIOR_PRESERVED_BIT : 0),
+-                    EGL_STENCIL_SIZE, stencilSize,
+-                    EGL_SURFACE_TYPE, EGL_WINDOW_BIT | swapBehavior,
 -                    EGL_NONE
 -            };
 +            if (SystemProperties.get("ro.softwaregl").equals("true")) {
@@ -95,6 +112,10 @@ index 5b7a5af..aa22d97 100644
 +                        EGL_NONE
 +                };
 +            } else {
++                //noinspection PointlessBooleanExpression,ConstantConditions
++                final int stencilSize = GLES20Canvas.getStencilSize();
++                final int swapBehavior = dirtyRegions ? EGL14.EGL_SWAP_BEHAVIOR_PRESERVED_BIT : 0;
++
 +                return new int[] {
 +                        EGL_RENDERABLE_TYPE, EGL14.EGL_OPENGL_ES2_BIT,
 +                        EGL_RED_SIZE, 8,
@@ -103,44 +124,11 @@ index 5b7a5af..aa22d97 100644
 +                        EGL_ALPHA_SIZE, 8,
 +                        EGL_DEPTH_SIZE, 0,
 +                        EGL_CONFIG_CAVEAT, EGL_NONE,
-+                        // TODO: Find a better way to choose the stencil size
-+                        EGL_STENCIL_SIZE, mShowOverdraw ? GLES20Canvas.getStencilSize() : 0,
-+                        EGL_SURFACE_TYPE, EGL_WINDOW_BIT |
-+                                (dirtyRegions ? EGL14.EGL_SWAP_BEHAVIOR_PRESERVED_BIT : 0),
++                        EGL_STENCIL_SIZE, stencilSize,
++                        EGL_SURFACE_TYPE, EGL_WINDOW_BIT | swapBehavior,
 +                        EGL_NONE
 +                };
 +            }
          }
-         
-         @Override
-diff --git a/services/java/com/android/server/wm/ScreenRotationAnimation.java b/services/java/com/android/server/wm/ScreenRotationAnimation.java
-index 338d706..732a32d 100644
---- a/services/java/com/android/server/wm/ScreenRotationAnimation.java
-+++ b/services/java/com/android/server/wm/ScreenRotationAnimation.java
-@@ -230,14 +230,20 @@ class ScreenRotationAnimation {
  
-         try {
-             try {
--                if (WindowManagerService.DEBUG_SURFACE_TRACE) {
--                    mSurface = new SurfaceTrace(session, "FreezeSurface",
--                            mWidth, mHeight,
--                            PixelFormat.OPAQUE, Surface.FX_SURFACE_SCREENSHOT | Surface.HIDDEN);
--                } else {
-+                if (android.os.SystemProperties.get("ro.softwaregl").equals("true")) {
-                     mSurface = new Surface(session, "FreezeSurface",
-                             mWidth, mHeight,
--                            PixelFormat.OPAQUE, Surface.FX_SURFACE_SCREENSHOT | Surface.HIDDEN);
-+                            PixelFormat.OPAQUE, Surface.FX_SURFACE_DIM | Surface.HIDDEN);
-+                } else {
-+                    if (WindowManagerService.DEBUG_SURFACE_TRACE) {
-+                        mSurface = new SurfaceTrace(session, "FreezeSurface",
-+                                mWidth, mHeight,
-+                                PixelFormat.OPAQUE, Surface.FX_SURFACE_SCREENSHOT | Surface.HIDDEN);
-+                    } else {
-+                        mSurface = new Surface(session, "FreezeSurface",
-+                                mWidth, mHeight,
-+                                PixelFormat.OPAQUE, Surface.FX_SURFACE_SCREENSHOT | Surface.HIDDEN);
-+                    }
-                 }
-                 if (!mSurface.isValid()) {
-                     // Screenshot failed, punt.
+         @Override
