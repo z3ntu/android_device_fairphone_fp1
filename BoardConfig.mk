@@ -21,6 +21,8 @@ TARGET_CPU_ABI2 := armeabi
 TARGET_CPU_VARIANT := cortex-a7
 TARGET_CPU_SMP := true
 
+TARGET_BOOTLOADER_BOARD_NAME := fp1
+
 TARGET_NO_BOOTLOADER := true
 
 # The bootloader of the Fairphone 1 seems to use hardcoded values for
