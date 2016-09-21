@@ -19,5 +19,16 @@ on fs
 
 
 
+on boot
+    # Lights module uses the "trigger" attribute for blinking. Dynamic
+    # attributes "delay_on" and "delay_off", added and removed when the value of
+    # the "trigger" attribute is set and unset to "timer", must be handled
+    # through uevents.
+    chown system system /sys/class/leds/red/trigger
+    chown system system /sys/class/leds/green/trigger
+    chown system system /sys/class/leds/blue/trigger
+
+
+
 service charger /charger
     class charger
