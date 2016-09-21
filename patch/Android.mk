@@ -50,9 +50,11 @@ endif
 
 patch-source-tree-for-fp1:
 	$(call patch-repository,frameworks/base,device/fairphone/fp1/patch/add-support-for-softwaregl.patch)
+	$(call patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/force-gles1-in-gallery-when-using-softwaregl.patch)
 
 reverse-patch-source-tree-for-fp1:
 	$(call reverse-patch-repository,frameworks/base,device/fairphone/fp1/patch/add-support-for-softwaregl.patch)
+	$(call reverse-patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/force-gles1-in-gallery-when-using-softwaregl.patch)
 
 patch-repository = \
     @if patch --strip=1 --directory="$1" --force --dry-run < "$2" > /dev/null; then \
