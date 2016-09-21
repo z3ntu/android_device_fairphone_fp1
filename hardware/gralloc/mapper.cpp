@@ -26,6 +26,7 @@
 
 #include <cutils/log.h>
 #include <cutils/atomic.h>
+#include <cutils/hashmap.h>
 
 #include <hardware/hardware.h>
 #include <hardware/gralloc.h>
@@ -43,12 +44,37 @@ pid_t gettid() { return syscall(__NR_gettid);}
 
 /*****************************************************************************/
 
-static int gralloc_map(gralloc_module_t const* module,
+static pthread_mutex_t sMapLock = PTHREAD_MUTEX_INITIALIZER;
+
+/*****************************************************************************/
+
+struct HashmapEntry {
+    int key;
+    void* mappedAddress;
+    int referenceCount;
+};
+
+static Hashmap* referenceCountedMappedBuffers;
+
+static int gralloc_map_locked(gralloc_module_t const* module,
         buffer_handle_t handle,
         void** vaddr)
 {
     private_handle_t* hnd = (private_handle_t*)handle;
     if (!(hnd->flags & private_handle_t::PRIV_FLAGS_FRAMEBUFFER)) {
+        if (!referenceCountedMappedBuffers) {
+            referenceCountedMappedBuffers = hashmapCreate(1, &hashmapIntHash, &hashmapIntEquals);
+        }
+
+        HashmapEntry* referenceCountedMappedBuffer = (HashmapEntry*) hashmapGet(referenceCountedMappedBuffers, &hnd->fd);
+        if (referenceCountedMappedBuffer) {
+            hnd->base = intptr_t(referenceCountedMappedBuffer->mappedAddress) + hnd->offset;
+
+            referenceCountedMappedBuffer->referenceCount++;
+
+            return 0;
+        }
+
         size_t size = hnd->size;
         void* mappedAddress = mmap(0, size,
                 PROT_READ|PROT_WRITE, MAP_SHARED, hnd->fd, 0);
@@ -59,30 +85,74 @@ static int gralloc_map(gralloc_module_t const* module,
         hnd->base = intptr_t(mappedAddress) + hnd->offset;
         //ALOGD("gralloc_map() succeeded fd=%d, off=%d, size=%d, vaddr=%p",
         //        hnd->fd, hnd->offset, hnd->size, mappedAddress);
+
+        HashmapEntry* hashmapEntry = (HashmapEntry*) malloc(sizeof(HashmapEntry));
+        hashmapEntry->key = hnd->fd;
+        hashmapEntry->mappedAddress = mappedAddress;
+        hashmapEntry->referenceCount = 1;
+
+        hashmapPut(referenceCountedMappedBuffers, &hashmapEntry->key, hashmapEntry);
     }
     *vaddr = (void*)hnd->base;
     return 0;
 }
 
-static int gralloc_unmap(gralloc_module_t const* module,
+static int gralloc_map(gralloc_module_t const* module,
+        buffer_handle_t handle,
+        void** vaddr)
+{
+    pthread_mutex_lock(&sMapLock);
+    int err = gralloc_map_locked(module, handle, vaddr);
+    pthread_mutex_unlock(&sMapLock);
+    return err;
+}
+
+static int gralloc_unmap_locked(gralloc_module_t const* module,
         buffer_handle_t handle)
 {
     private_handle_t* hnd = (private_handle_t*)handle;
     if (!(hnd->flags & private_handle_t::PRIV_FLAGS_FRAMEBUFFER)) {
+        if (!referenceCountedMappedBuffers) {
+            ALOGE("Unmapping buffer when referenceCountedMappedBuffers was not yet initialized!: %d", hnd->fd);
+
+            referenceCountedMappedBuffers = hashmapCreate(1, &hashmapIntHash, &hashmapIntEquals);
+        }
+
+        HashmapEntry* referenceCountedMappedBuffer = (HashmapEntry*) hashmapGet(referenceCountedMappedBuffers, &hnd->fd);
+        if (referenceCountedMappedBuffer) {
+            referenceCountedMappedBuffer->referenceCount--;
+
+            if (referenceCountedMappedBuffer->referenceCount > 0) {
+                hnd->base = 0;
+
+                return 0;
+            }
+        } else {
+            ALOGE("Unmapping buffer not registered!: %d", hnd->fd);
+        }
+
         void* base = (void*)hnd->base;
         size_t size = hnd->size;
         //ALOGD("unmapping from %p, size=%d", base, size);
         if (munmap(base, size) < 0) {
             ALOGE("Could not unmap %s", strerror(errno));
         }
+
+        hashmapRemove(referenceCountedMappedBuffers, &hnd->fd);
+        free(referenceCountedMappedBuffer);
     }
     hnd->base = 0;
     return 0;
 }
 
-/*****************************************************************************/
-
-static pthread_mutex_t sMapLock = PTHREAD_MUTEX_INITIALIZER;
+static int gralloc_unmap(gralloc_module_t const* module,
+        buffer_handle_t handle)
+{
+    pthread_mutex_lock(&sMapLock);
+    int err = gralloc_unmap_locked(module, handle);
+    pthread_mutex_unlock(&sMapLock);
+    return err;
+}
 
 /*****************************************************************************/
 
