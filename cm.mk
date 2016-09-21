@@ -150,5 +150,5 @@ PRODUCT_COPY_FILES += \
 
 # Default Stagefright configuration files for built-in software codecs.
 PRODUCT_COPY_FILES += \
-	development/tools/emulator/system/camera/media_codecs.xml:system/etc/media_codecs.xml \
-	development/tools/emulator/system/camera/media_profiles.xml:system/etc/media_profiles.xml
+	device/generic/goldfish/camera/media_codecs.xml:system/etc/media_codecs.xml \
+	device/generic/goldfish/camera/media_profiles.xml:system/etc/media_profiles.xml
