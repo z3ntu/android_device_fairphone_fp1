@@ -125,11 +125,11 @@ PRODUCT_PACKAGES += \
 	lights.fp1
 
 # The file frameworks/native/data/etc/handheld_core_hardware.xml defines the
-# minimum set of hardware features that an Android-compatible device has to
-# provide. Unfortunately, this FOSS device tree does not provide all the needed
-# features, so instead of adding that file the specific files for each of the
-# supported features are added (and, of course, also files for other extra
-# features not included in handheld_core_hardware.xml, if any).
+# minimum set of features that an Android-compatible device has to provide.
+# Unfortunately, this FOSS device tree does not provide all the needed features,
+# so instead of adding that file the specific files for each of the supported
+# features are added (and, of course, also files for other extra features not
+# included in handheld_core_hardware.xml, if any).
 #
 # Note that although it is not possible to automatically change between portrait
 # and landscape based on the orientation of the device (due to a lack of a
@@ -138,5 +138,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
 	device/fairphone/fp1/permissions/android.hardware.screen.landscape.xml:system/etc/permissions/android.hardware.screen.landscape.xml \
 	device/fairphone/fp1/permissions/android.hardware.screen.portrait.xml:system/etc/permissions/android.hardware.screen.portrait.xml \
+	device/fairphone/fp1/permissions/android.software.app_widgets.xml:system/etc/permissions/android.software.app_widgets.xml \
+	device/fairphone/fp1/permissions/android.software.home_screen.xml:system/etc/permissions/android.software.home_screen.xml \
+	device/fairphone/fp1/permissions/android.software.input_methods.xml:system/etc/permissions/android.software.input_methods.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
 	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml
