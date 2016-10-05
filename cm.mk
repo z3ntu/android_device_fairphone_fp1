@@ -29,6 +29,10 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 # Inherit Dalvik heap configuration for a standard high density phone.
 $(call inherit-product, frameworks/native/build/phone-hdpi-dalvik-heap.mk)
 
+# Inherit Fairphone 1 proprietary features configuration. If it does not exist
+# it is just ignored.
+$(call inherit-product-if-exists, vendor/fairphone/fp1/cm-vendor.mk)
+
 PRODUCT_NAME := cm_fp1
 PRODUCT_DEVICE := fp1
 PRODUCT_BRAND := CyanogenMod
