@@ -1,0 +1,45 @@
+diff --git a/core/Makefile b/core/Makefile
+index b29d784..686e186 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -836,6 +836,13 @@ INSTALLED_RECOVERYIMAGE_TARGET :=
+ RECOVERY_RESOURCE_ZIP :=
+ endif
+ 
++ifeq ($(TARGET_NO_RECOVERY),true)
++ifeq ($(TARGET_NO_KERNEL),)
++$(info Forcing TARGET_NO_SEPARATE_RECOVERY as TARGET_NO_RECOVERY is true and TARGET_NO_KERNEL is not set)
++TARGET_NO_SEPARATE_RECOVERY := true
++endif
++endif
++
+ .PHONY: recoveryimage
+ recoveryimage: $(INSTALLED_RECOVERYIMAGE_TARGET) $(RECOVERY_RESOURCE_ZIP)
+ 
+@@ -1373,8 +1380,10 @@ ifdef BOARD_CUSTOM_BOOTIMG_MK
+ 	@# Prebuilt boot images
+ 	$(hide) mkdir -p $(zip_root)/BOOTABLE_IMAGES
+ 	$(hide) $(ACP) $(INSTALLED_BOOTIMAGE_TARGET) $(zip_root)/BOOTABLE_IMAGES/
++ifndef TARGET_NO_SEPARATE_RECOVERY
+ 	$(hide) $(ACP) $(INSTALLED_RECOVERYIMAGE_TARGET) $(zip_root)/BOOTABLE_IMAGES/
+ endif
++endif
+ ifdef BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE
+ 	@# Contents of the vendor image
+ 	$(hide) $(call package_files-copy-root, \
+diff --git a/tools/releasetools/ota_from_target_files b/tools/releasetools/ota_from_target_files
+index beaabc6..14b91b3 100755
+--- a/tools/releasetools/ota_from_target_files
++++ b/tools/releasetools/ota_from_target_files
+@@ -489,8 +489,9 @@ def WriteFullOTAPackage(input_zip, output_zip):
+   #       set up system to update recovery partition on first boot
+   #    complete script normally (allow recovery to mark itself finished and reboot)
+ 
+-  recovery_img = common.GetBootableImage("recovery.img", "recovery.img",
+-                                         OPTIONS.input_tmp, "RECOVERY")
++  if OPTIONS.two_step or not OPTIONS.no_separate_recovery:
++    recovery_img = common.GetBootableImage("recovery.img", "recovery.img",
++                                           OPTIONS.input_tmp, "RECOVERY")
+   if OPTIONS.two_step:
+     if not OPTIONS.info_dict.get("multistage_support", None):
+       assert False, "two-step packages not supported by this build"
