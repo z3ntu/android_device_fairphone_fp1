@@ -124,6 +124,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PACKAGES += \
 	lights.fp1
 
+PRODUCT_PACKAGES += \
+	com.android.future.usb.accessory
+
 # The file frameworks/native/data/etc/handheld_core_hardware.xml defines the
 # minimum set of features that an Android-compatible device has to provide.
 # Unfortunately, this FOSS device tree does not provide all the needed features,
@@ -142,4 +145,5 @@ PRODUCT_COPY_FILES += \
 	device/fairphone/fp1/permissions/android.software.home_screen.xml:system/etc/permissions/android.software.home_screen.xml \
 	device/fairphone/fp1/permissions/android.software.input_methods.xml:system/etc/permissions/android.software.input_methods.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
+	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml
