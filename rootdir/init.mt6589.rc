@@ -1,5 +1,9 @@
 import /init.mt6589.usb.rc
 
+# Import init.rc file for Fairphone 1 proprietary features. If it does not exist
+# it is just ignored.
+import /init.mt6589.proprietary.rc
+
 
 
 on init
