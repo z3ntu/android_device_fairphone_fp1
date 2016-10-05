@@ -2,6 +2,6 @@
 /dev/block/mmcblk0p7                     /data        ext4    nosuid,nodev,noatime,discard    wait,check,nonremovable
 /dev/block/mmcblk0p5                     /system      ext4    noatime,discard    wait,check,nonremovable
 
-/devices/platform/mtk-msdc.0/mmc_host    /storage/sdcard0    vfat    defaults    voldmanaged=internalsd:8,nonremovable
-/devices/platform/mtk-msdc.1/mmc_host    /storage/sdcard1    auto    defaults    voldmanaged=externalsd:auto
-/devices/platform/mt_usb                 /storage/usbotg     auto    defaults    voldmanaged=usbotg:auto
+/devices/platform/mtk-msdc.0/mmc_host    auto         vfat    defaults    voldmanaged=sdcard0:8,nonremovable
+/devices/platform/mtk-msdc.1/mmc_host    auto         auto    defaults    voldmanaged=sdcard1:auto
+/devices/platform/mt_usb                 auto         auto    defaults    voldmanaged=usbotg:auto
