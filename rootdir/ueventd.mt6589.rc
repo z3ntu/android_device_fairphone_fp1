@@ -1,0 +1,8 @@
+# Lights module uses the "timer" trigger, which creates the attributes
+# "delay_on" and "delay_off", for blinking.
+/sys/devices/platform/leds-mt65xx/leds/green   delay_on      0644  system   system
+/sys/devices/platform/leds-mt65xx/leds/green   delay_off     0644  system   system
+/sys/devices/platform/leds-mt65xx/leds/red     delay_on      0644  system   system
+/sys/devices/platform/leds-mt65xx/leds/red     delay_off     0644  system   system
+/sys/devices/platform/leds-mt65xx/leds/blue    delay_on      0644  system   system
+/sys/devices/platform/leds-mt65xx/leds/blue    delay_off     0644  system   system
