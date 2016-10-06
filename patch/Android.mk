@@ -70,9 +70,13 @@ ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED=$(PRODUCT_OUT)/abort-if-build-system-was-modi
 
 patch-source-tree-for-fp1:
 	$(call patch-repository,build,device/fairphone/fp1/patch/fix-cm-build-system-for-ota-with-no-recovery.patch,$(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED))
+	$(call patch-repository,frameworks/base,device/fairphone/fp1/patch/add-support-for-softwaregl.patch)
+	$(call patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/force-gles1-in-gallery-when-using-softwaregl.patch)
 
 reverse-patch-source-tree-for-fp1:
 	$(call reverse-patch-repository,build,device/fairphone/fp1/patch/fix-cm-build-system-for-ota-with-no-recovery.patch,$(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED))
+	$(call reverse-patch-repository,frameworks/base,device/fairphone/fp1/patch/add-support-for-softwaregl.patch)
+	$(call reverse-patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/force-gles1-in-gallery-when-using-softwaregl.patch)
 
 abort-if-build-system-was-patched: | patch-source-tree-for-fp1
 	$(if $(wildcard $(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED)), \
