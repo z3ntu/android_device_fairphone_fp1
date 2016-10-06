@@ -1,0 +1,20 @@
+diff --git a/opengl/libs/EGL/Loader.cpp b/opengl/libs/EGL/Loader.cpp
+index beaa560..21585c0 100644
+--- a/opengl/libs/EGL/Loader.cpp
++++ b/opengl/libs/EGL/Loader.cpp
+@@ -333,8 +333,13 @@ void *Loader::load_driver(const char* kind,
+                         continue;
+                     }
+                     if (!strcmp(e->d_name, "libGLES_android.so")) {
+-                        // always skip the software renderer
+-                        continue;
++                        char property[PROPERTY_VALUE_MAX];
++                        property_get("ro.softwaregl", property, "false");
++                        if (strcmp(property, "true")) {
++                            // skip the software renderer only if softwaregl is
++                            // not enabled
++                            continue;
++                        }
+                     }
+                     if (strstr(e->d_name, pattern.string()) == e->d_name) {
+                         if (!strcmp(e->d_name + strlen(e->d_name) - 3, ".so")) {
