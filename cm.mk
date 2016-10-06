@@ -138,6 +138,7 @@ PRODUCT_COPY_FILES += \
 	device/fairphone/fp1/permissions/android.hardware.screen.landscape.xml:system/etc/permissions/android.hardware.screen.landscape.xml \
 	device/fairphone/fp1/permissions/android.hardware.screen.portrait.xml:system/etc/permissions/android.hardware.screen.portrait.xml \
 	device/fairphone/fp1/permissions/android.software.app_widgets.xml:system/etc/permissions/android.software.app_widgets.xml \
+	device/fairphone/fp1/permissions/android.software.device_admin.xml:system/etc/permissions/android.software.device_admin.xml \
 	device/fairphone/fp1/permissions/android.software.home_screen.xml:system/etc/permissions/android.software.home_screen.xml \
 	device/fairphone/fp1/permissions/android.software.input_methods.xml:system/etc/permissions/android.software.input_methods.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
