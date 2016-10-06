@@ -67,11 +67,10 @@ RECOVERY_FSTAB_VERSION := 2
 # called from "build/core/Makefile" builds the boot image using the default
 # "mkbootimg" command, instead of the one specified in the MKBOOTIMG defined in
 # the makefiles. The "ota_from_target_files" script uses the prebuilt "boot.img"
-# instead of building it again when the MKBOOTIMG environment variable is set;
-# however, when "ota_from_target_files" is called from "build/core/Makefile"
-# that variable is set to the value of the BOARD_CUSTOM_BOOTIMG_MK defined in
-# the makefiles instead of the value of the MKBOOTIMG defined in the makefiles.
-# If BOARD_CUSTOM_BOOTIMG_MK is defined then it is used in other places in the
+# instead of building it again when the file is provided in the input target
+# files zip; when "ota_from_target_files" is called from "build/core/Makefile"
+# that happens only if BOARD_CUSTOM_BOOTIMG_MK is defined. If
+# BOARD_CUSTOM_BOOTIMG_MK is defined then it is used in other places in the
 # build system, so a dummy file with just the rules not defined due to
 # BOARD_CUSTOM_BOOTIMG_MK being set is used.
 #
