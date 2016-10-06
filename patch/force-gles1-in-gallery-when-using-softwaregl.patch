@@ -1,0 +1,22 @@
+diff --git a/src/com/android/gallery3d/ui/GLRootView.java b/src/com/android/gallery3d/ui/GLRootView.java
+index 13bb30c..a8df549 100644
+--- a/src/com/android/gallery3d/ui/GLRootView.java
++++ b/src/com/android/gallery3d/ui/GLRootView.java
+@@ -120,7 +120,7 @@ public class GLRootView extends GLSurfaceView
+         super(context, attrs);
+         mFlags |= FLAG_INITIALIZED;
+         setBackgroundDrawable(null);
+-        setEGLContextClientVersion(ApiHelper.HAS_GLES20_REQUIRED ? 2 : 1);
++        setEGLContextClientVersion(ApiHelper.HAS_GLES20_REQUIRED && !Build.isSoftwareGl() ? 2 : 1);
+         if (ApiHelper.USE_888_PIXEL_FORMAT) {
+             setEGLConfigChooser(8, 8, 8, 0, 0, 0);
+         } else {
+@@ -291,7 +291,7 @@ public class GLRootView extends GLSurfaceView
+         mRenderLock.lock();
+         try {
+             mGL = gl;
+-            mCanvas = ApiHelper.HAS_GLES20_REQUIRED ? new GLES20Canvas() : new GLES11Canvas(gl);
++            mCanvas = ApiHelper.HAS_GLES20_REQUIRED && !Build.isSoftwareGl() ? new GLES20Canvas() : new GLES11Canvas(gl);
+             BasicTexture.invalidateAllTextures();
+         } finally {
+             mRenderLock.unlock();
