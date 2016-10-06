@@ -1,59 +1,23 @@
 diff --git a/core/java/android/app/ActivityManager.java b/core/java/android/app/ActivityManager.java
-index a29c839..e76ee97 100644
+index 57d6cd3..925abcf 100644
 --- a/core/java/android/app/ActivityManager.java
 +++ b/core/java/android/app/ActivityManager.java
-@@ -382,25 +382,29 @@ public class ActivityManager {
+@@ -457,6 +457,10 @@ public class ActivityManager {
       * @hide
       */
      static public boolean isHighEndGfx() {
--        MemInfoReader reader = new MemInfoReader();
--        reader.readMemInfo();
--        if (reader.getTotalSize() >= (512*1024*1024)) {
--            // If the device has at least 512MB RAM available to the kernel,
--            // we can afford the overhead of graphics acceleration.
--            return true;
--        }
 +        if (SystemProperties.get("ro.softwaregl").equals("true")) {
 +            return false;
-+        } else {
-+            MemInfoReader reader = new MemInfoReader();
-+            reader.readMemInfo();
-+            if (reader.getTotalSize() >= (512*1024*1024)) {
-+                // If the device has at least 512MB RAM available to the kernel,
-+                // we can afford the overhead of graphics acceleration.
-+                return true;
-+            }
- 
--        Display display = DisplayManagerGlobal.getInstance().getRealDisplay(
--                Display.DEFAULT_DISPLAY);
--        Point p = new Point();
--        display.getRealSize(p);
--        int pixels = p.x * p.y;
--        if (pixels >= (1024*600)) {
--            // If this is a sufficiently large screen, then there are enough
--            // pixels on it that we'd really like to use hw drawing.
--            return true;
-+            Display display = DisplayManagerGlobal.getInstance().getRealDisplay(
-+                    Display.DEFAULT_DISPLAY);
-+            Point p = new Point();
-+            display.getRealSize(p);
-+            int pixels = p.x * p.y;
-+            if (pixels >= (1024*600)) {
-+                // If this is a sufficiently large screen, then there are enough
-+                // pixels on it that we'd really like to use hw drawing.
-+                return true;
-+            }
-+            return false;
-         }
--        return false;
-     }
- 
-     /**
++        }
++
+         return (!isLowRamDeviceStatic() &&
+                 !Resources.getSystem().getBoolean(com.android.internal.R.bool.config_avoidGfxAccel))
+                 || isForcedHighEndGfx();
 diff --git a/core/java/android/os/Build.java b/core/java/android/os/Build.java
-index 6c9f2d1..947f1de 100644
+index 16b2b67..1585a0d 100644
 --- a/core/java/android/os/Build.java
 +++ b/core/java/android/os/Build.java
-@@ -467,6 +467,10 @@ public class Build {
+@@ -513,6 +513,10 @@ public class Build {
          return SystemProperties.get(TelephonyProperties.PROPERTY_BASEBAND_VERSION, null);
      }
  
@@ -65,11 +29,11 @@ index 6c9f2d1..947f1de 100644
          return SystemProperties.get(property, UNKNOWN);
      }
 diff --git a/core/java/android/view/HardwareRenderer.java b/core/java/android/view/HardwareRenderer.java
-index 8308459..999c8e6 100644
+index b3b7f7a..3c3eb23 100644
 --- a/core/java/android/view/HardwareRenderer.java
 +++ b/core/java/android/view/HardwareRenderer.java
-@@ -191,14 +191,14 @@ public abstract class HardwareRenderer {
-      * 
+@@ -213,14 +213,14 @@ public abstract class HardwareRenderer {
+      *
       * @hide
       */
 -    public static boolean sRendererDisabled = false;
@@ -77,7 +41,7 @@ index 8308459..999c8e6 100644
  
      /**
       * Further hardware renderer disabling for the system process.
-      * 
+      *
       * @hide
       */
 -    public static boolean sSystemRendererDisabled = false;
@@ -85,7 +49,7 @@ index 8308459..999c8e6 100644
  
      /**
       * Number of frames to profile.
-@@ -1768,22 +1768,30 @@ public abstract class HardwareRenderer {
+@@ -1952,22 +1952,30 @@ public abstract class HardwareRenderer {
  
          @Override
          int[] getConfig(boolean dirtyRegions) {
