@@ -150,5 +150,5 @@ PRODUCT_COPY_FILES += \
 
 # Default Stagefright configuration files for built-in software codecs.
 PRODUCT_COPY_FILES += \
-	device/generic/goldfish/camera/media_codecs.xml:system/etc/media_codecs.xml \
+	device/fairphone/fp1/config/media_codecs.xml:system/etc/media_codecs.xml \
 	device/generic/goldfish/camera/media_profiles.xml:system/etc/media_profiles.xml
