@@ -147,3 +147,8 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
 	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml
+
+# Default Stagefright configuration files for built-in software codecs.
+PRODUCT_COPY_FILES += \
+	device/fairphone/fp1/config/media_codecs.xml:system/etc/media_codecs.xml \
+	device/generic/goldfish/camera/media_profiles.xml:system/etc/media_profiles.xml
