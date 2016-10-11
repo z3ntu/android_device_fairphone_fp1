@@ -57,20 +57,20 @@ reverse-patch-source-tree-for-fp1:
 	$(call reverse-patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/force-gles1-in-gallery-when-using-softwaregl.patch)
 
 patch-repository = \
-    @if patch --strip=1 --directory="$1" --force --dry-run < "$2" > /dev/null; then \
+    @if patch --strip=1 --directory="$1" --force --fuzz=0 --dry-run < "$2" > /dev/null; then \
         echo "Patch $1 repository for FP1 ($2)"; \
-        patch --strip=1 --directory="$1" --force < "$2"; \
-    elif patch --strip=1 --directory="$1" --force --reverse --dry-run < "$2" > /dev/null; then \
+        patch --strip=1 --directory="$1" --force --fuzz=0 < "$2"; \
+    elif patch --strip=1 --directory="$1" --force --fuzz=0 --reverse --dry-run < "$2" > /dev/null; then \
         echo "No need to patch $1 repository for FP1 ($2)"; \
     else \
         echo "Error: $2 does not match $1 repository" && false; \
     fi
 
 reverse-patch-repository = \
-    @if patch --strip=1 --directory="$1" --force --reverse --dry-run < "$2" > /dev/null; then \
+    @if patch --strip=1 --directory="$1" --force --fuzz=0 --reverse --dry-run < "$2" > /dev/null; then \
         echo "Reverse patch $1 repository for FP1 ($2)"; \
-        patch --strip=1 --directory="$1" --force --reverse < "$2"; \
-    elif patch --strip=1 --directory="$1" --force --dry-run < "$2" > /dev/null; then \
+        patch --strip=1 --directory="$1" --force --fuzz=0 --reverse < "$2"; \
+    elif patch --strip=1 --directory="$1" --force --fuzz=0 --dry-run < "$2" > /dev/null; then \
         echo "No need to reverse patch $1 repository for FP1 ($2)"; \
     else \
         echo "Error: $2 does not match $1 repository" && false; \
