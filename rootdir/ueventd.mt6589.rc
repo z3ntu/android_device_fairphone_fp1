@@ -28,3 +28,15 @@
 # Needed by hardware accelerated graphics; it must be accessible for every user,
 # as it is opened (indirectly) even by user applications.
 /dev/pvrsrvkm             0666   root       root
+
+# Needed by nvram_daemon. Although nvram_daemon will access /dev/nvram and
+# /dev/pro_info the dumchar driver that manages them will in turn access the
+# disk that those partitions belong to, that is, /dev/block/mmcblk0.
+/dev/block/mmcblk0        0660   root       system
+/dev/nvram                0660   root       system
+/dev/pro_info             0660   root       system
+
+# nvram_daemon should be able to access /dev/gsensor and /dev/gyroscope to
+# perform their calibration.
+/dev/gsensor              0660   system     system
+/dev/gyroscope            0660   system     system
