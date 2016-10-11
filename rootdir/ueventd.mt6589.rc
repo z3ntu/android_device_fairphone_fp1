@@ -6,3 +6,25 @@
 /sys/devices/platform/leds-mt65xx/leds/red     delay_off     0644  system   system
 /sys/devices/platform/leds-mt65xx/leds/blue    delay_on      0644  system   system
 /sys/devices/platform/leds-mt65xx/leds/blue    delay_off     0644  system   system
+
+
+
+
+
+
+# A specific uevent.rc file is needed for proprietary features. Unfortunately,
+# the init system supports just the general "uevent.rc" file and the device
+# specific "uevent.{HARDWARE}.rc" file; it is not possible to divide the device
+# specific file in others, for example for uevents needed by Free Software
+# components and for uevents needed by proprietary components. Therefore, this
+# file must include also the permissions needed by the proprietary features,
+# instead of only those for the FOSS device tree (although this does not affect
+# the FOSS condition of the device tree, as no proprietary features are actually
+# included).
+
+# Needed by gralloc.mt6589.so.
+/dev/graphics/fb0         0660   system     graphics
+
+# Needed by hardware accelerated graphics; it must be accessible for every user,
+# as it is opened (indirectly) even by user applications.
+/dev/pvrsrvkm             0666   root       root
