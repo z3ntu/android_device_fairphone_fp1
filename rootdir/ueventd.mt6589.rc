@@ -48,3 +48,16 @@
 /dev/gsensor              0660   system     system
 /dev/gyroscope            0660   system     system
 /dev/msensor              0660   system     system
+
+# Needed by 6620_launcher.
+/dev/ttyMT2               0660   system     system
+
+# Needed by gps.default.so and libmnlp_mt6628.
+/dev/gps                  0660   gps        gps
+
+# Needed by mnld.
+/sys/devices/virtual/gpsdrv/gps    pwrctl     0660   gps        gps
+/sys/devices/virtual/gpsdrv/gps    pwrsave    0660   gps        gps
+/sys/devices/virtual/gpsdrv/gps    state      0660   gps        gps
+/sys/devices/virtual/gpsdrv/gps    status     0660   gps        gps
+/sys/devices/virtual/gpsdrv/gps    suspend    0660   gps        gps
