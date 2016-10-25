@@ -36,7 +36,15 @@
 /dev/nvram                0660   root       system
 /dev/pro_info             0660   root       system
 
-# nvram_daemon should be able to access /dev/gsensor and /dev/gyroscope to
-# perform their calibration.
+# /dev/hwmsensor is used by sensors.default.so. It seems to act as a hub where
+# sensor values can be read. Due to this, sensors.default.so does not require
+# extra permissions for other devices like /dev/als_ps. However, other
+# executables may access specific sensor devices and thus their permissions have
+# to be tweaked:
+#   -/dev/gsensor and /dev/msensor are used by memsicd3416x.
+#   -/dev/gsensor and /dev/gyroscope should be accessible by nvram_daemon to
+#    perform their calibration.
+/dev/hwmsensor            0660   system     system
 /dev/gsensor              0660   system     system
 /dev/gyroscope            0660   system     system
+/dev/msensor              0660   system     system
