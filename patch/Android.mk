@@ -61,7 +61,7 @@ patch-repository = \
     elif patch --strip=1 --directory="$1" --force --fuzz=0 --reverse --dry-run < "$2" > /dev/null; then \
         echo "No need to patch $1 repository for FP1 ($2)"; \
     else \
-        echo "Error: $2 does not match $1 repository" && false; \
+        echo "Error: $2 does not match $1 repository"; \
     fi
 
 reverse-patch-repository = \
@@ -71,5 +71,5 @@ reverse-patch-repository = \
     elif patch --strip=1 --directory="$1" --force --fuzz=0 --dry-run < "$2" > /dev/null; then \
         echo "No need to reverse patch $1 repository for FP1 ($2)"; \
     else \
-        echo "Error: $2 does not match $1 repository" && false; \
+        echo "Error: $2 does not match $1 repository"; \
     fi
