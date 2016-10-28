@@ -31,6 +31,13 @@
 # devices simultaneously in the same output directory (due to the "host" and
 # "target/common" subdirectories), this system makes impossible to build
 # different devices simultaneously even from the same source directory.
+#
+# Also, when patching files belonging to the build system, the build must be
+# stopped and then launched again. Otherwise, the changes applied to the build
+# system may not be taken into account. On the other hand, although build files
+# may have been processed already when they are modified, the files are modified
+# before the build itself starts, so patching source files does not require the
+# build to be restarted.
 
 # In order to apply the patches before any file is built two virtual filenames
 # are declared, one to patch and another to revert the patches. The recipes that
@@ -39,14 +46,27 @@
 # build does not fail despite that the files do not exist), which triggers the
 # execution of the recipes.
 # http://stackoverflow.com/questions/10726321/how-to-ensure-a-target-is-run-before-all-the-other-build-rules-in-a-makefile/10727593#10727593
+#
+# In order to abort the build when the build system is patched a dummy file is
+# created in the $PRODUCT_OUT directory to signal that. After the recipes for
+# the targets that patch or revert the patches are executed the recipes for
+# a helper target are executed. The recipes for that helper target checks if the
+# dummy file exists and, in that case, removes it and stops the build, notifying
+# the user. As far as I know, it is not possible to perform the check in the
+# main targets themselves, as the Makefile functions would be evaluated before
+# the recipe was executed.
 
-.PHONY: patch-source-tree-for-fp1 reverse-patch-source-tree-for-fp1
+.PHONY: patch-source-tree-for-fp1 reverse-patch-source-tree-for-fp1 abort-if-build-system-was-patched abort-if-build-system-was-reverse-patched
 
 ifneq ($(filter fp1,$(TARGET_DEVICE)),)
     -include patch-source-tree-for-fp1
+    -include abort-if-build-system-was-patched
 else
     -include reverse-patch-source-tree-for-fp1
+    -include abort-if-build-system-was-reverse-patched
 endif
+
+ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED=$(PRODUCT_OUT)/abort-if-build-system-was-modified
 
 patch-source-tree-for-fp1:
 	$(call patch-repository,frameworks/base,device/fairphone/fp1/patch/add-support-for-softwaregl.patch)
@@ -56,10 +76,23 @@ reverse-patch-source-tree-for-fp1:
 	$(call reverse-patch-repository,frameworks/base,device/fairphone/fp1/patch/add-support-for-softwaregl.patch)
 	$(call reverse-patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/force-gles1-in-gallery-when-using-softwaregl.patch)
 
+abort-if-build-system-was-patched: | patch-source-tree-for-fp1
+	$(if $(wildcard $(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED)), \
+	    $(shell rm -f $(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED)) \
+	    $(error The build system was patched. Launch again the build))
+
+abort-if-build-system-was-reverse-patched: | reverse-patch-source-tree-for-fp1
+	$(if $(wildcard $(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED)), \
+	    $(shell rm -f $(ABORT_IF_BUILD_SYSTEM_WAS_MODIFIED)) \
+	    $(error The build system was reverse patched. Launch again the build))
+
 patch-repository = \
     @if patch --strip=1 --directory="$1" --force --fuzz=0 --dry-run < "$2" > /dev/null; then \
         echo "Patch $1 repository for FP1 ($2)"; \
         patch --strip=1 --directory="$1" --force --fuzz=0 < "$2"; \
+        if [ -n "$3" ]; then \
+            touch "$3"; \
+        fi \
     elif patch --strip=1 --directory="$1" --force --fuzz=0 --reverse --dry-run < "$2" > /dev/null; then \
         echo "No need to patch $1 repository for FP1 ($2)"; \
     else \
@@ -70,6 +103,9 @@ reverse-patch-repository = \
     @if patch --strip=1 --directory="$1" --force --fuzz=0 --reverse --dry-run < "$2" > /dev/null; then \
         echo "Reverse patch $1 repository for FP1 ($2)"; \
         patch --strip=1 --directory="$1" --force --fuzz=0 --reverse < "$2"; \
+        if [ -n "$3" ]; then \
+            touch "$3"; \
+        fi \
     elif patch --strip=1 --directory="$1" --force --fuzz=0 --dry-run < "$2" > /dev/null; then \
         echo "No need to reverse patch $1 repository for FP1 ($2)"; \
     else \
