@@ -89,7 +89,7 @@ abort-if-build-system-was-reverse-patched: | reverse-patch-source-tree-for-fp1
 patch-repository = \
     @if patch --strip=1 --directory="$1" --force --fuzz=0 --dry-run < "$2" > /dev/null; then \
         echo "Patch $1 repository for FP1 ($2)"; \
-        patch --strip=1 --directory="$1" --force --fuzz=0 < "$2"; \
+        patch --strip=1 --directory="$1" --force --fuzz=0 --no-backup-if-mismatch < "$2"; \
         if [ -n "$3" ]; then \
             touch "$3"; \
         fi \
@@ -102,7 +102,7 @@ patch-repository = \
 reverse-patch-repository = \
     @if patch --strip=1 --directory="$1" --force --fuzz=0 --reverse --dry-run < "$2" > /dev/null; then \
         echo "Reverse patch $1 repository for FP1 ($2)"; \
-        patch --strip=1 --directory="$1" --force --fuzz=0 --reverse < "$2"; \
+        patch --strip=1 --directory="$1" --force --fuzz=0 --reverse --no-backup-if-mismatch < "$2"; \
         if [ -n "$3" ]; then \
             touch "$3"; \
         fi \
