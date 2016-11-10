@@ -1,0 +1,16 @@
+diff --git a/src/com/android/gallery3d/app/MovieActivity.java b/src/com/android/gallery3d/app/MovieActivity.java
+index 0ecb9c9..c1cc48a 100755
+--- a/src/com/android/gallery3d/app/MovieActivity.java
++++ b/src/com/android/gallery3d/app/MovieActivity.java
+@@ -588,8 +588,9 @@ public class MovieActivity extends Activity {
+ 
+     private boolean isBtHeadsetConnected() {
+         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+-        if ((BluetoothProfile.STATE_CONNECTED == adapter.getProfileConnectionState(BluetoothProfile.HEADSET))
+-            || (BluetoothProfile.STATE_CONNECTED == adapter.getProfileConnectionState(BluetoothProfile.A2DP))) {
++        if (adapter != null && adapter.isEnabled() &&
++            (BluetoothProfile.STATE_CONNECTED == adapter.getProfileConnectionState(BluetoothProfile.HEADSET)
++            || BluetoothProfile.STATE_CONNECTED == adapter.getProfileConnectionState(BluetoothProfile.A2DP))) {
+             return true;
+         }
+         return false;
