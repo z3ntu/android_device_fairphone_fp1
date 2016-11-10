@@ -1,0 +1,26 @@
+diff --git a/media/libstagefright/colorconversion/SoftwareRenderer.cpp b/media/libstagefright/colorconversion/SoftwareRenderer.cpp
+index 834e6b3..f59e76e 100644
+--- a/media/libstagefright/colorconversion/SoftwareRenderer.cpp
++++ b/media/libstagefright/colorconversion/SoftwareRenderer.cpp
+@@ -33,6 +33,12 @@ static bool runningInEmulator() {
+     return (property_get("ro.kernel.qemu", prop, NULL) > 0);
+ }
+ 
++static bool usingSoftwareGl() {
++    char prop[PROPERTY_VALUE_MAX];
++    property_get("ro.softwaregl", prop, "false");
++    return (strcmp(prop, "true") == 0);
++}
++
+ SoftwareRenderer::SoftwareRenderer(
+         const sp<ANativeWindow> &nativeWindow, const sp<MetaData> &meta)
+     : mConverter(NULL),
+@@ -68,7 +74,7 @@ SoftwareRenderer::SoftwareRenderer(
+         case OMX_COLOR_FormatYUV420Planar:
+         case OMX_TI_COLOR_FormatYUV420PackedSemiPlanar:
+         {
+-            if (!runningInEmulator()) {
++            if (!runningInEmulator() && !usingSoftwareGl()) {
+                 halFormat = HAL_PIXEL_FORMAT_YV12;
+                 bufWidth = (mCropWidth + 1) & ~1;
+                 bufHeight = (mCropHeight + 1) & ~1;
