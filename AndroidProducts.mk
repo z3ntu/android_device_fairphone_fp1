@@ -1,4 +1,5 @@
 # Copyright (C) 2016 Daniel Calviño Sánchez <danxuliu@gmail.com>
+# Copyright (C) 2017 Daniel Calviño Sánchez <danxuliu@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,5 +18,6 @@
 # system finds it automatically, but just for consistency.
 PRODUCT_MAKEFILES := \
 	$(LOCAL_DIR)/cwm_fp1.mk \
+	$(LOCAL_DIR)/multirom_fp1.mk \
 	$(LOCAL_DIR)/twrp_fp1.mk \
 	$(LOCAL_DIR)/cm.mk
