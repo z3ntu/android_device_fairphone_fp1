@@ -20,4 +20,4 @@ PRODUCT_MAKEFILES := \
 	$(LOCAL_DIR)/cwm_fp1.mk \
 	$(LOCAL_DIR)/multirom_fp1.mk \
 	$(LOCAL_DIR)/twrp_fp1.mk \
-	$(LOCAL_DIR)/cm.mk
+	$(LOCAL_DIR)/lineage.mk

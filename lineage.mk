@@ -33,10 +33,10 @@ $(call inherit-product, frameworks/native/build/phone-hdpi-dalvik-heap.mk)
 # it is just ignored.
 $(call inherit-product-if-exists, vendor/fairphone/fp1/cm-vendor.mk)
 
-PRODUCT_NAME := cm_fp1
+PRODUCT_NAME := lineage_fp1
 PRODUCT_DEVICE := fp1
-PRODUCT_BRAND := CyanogenMod
-PRODUCT_MODEL := CyanogenMod on FP1
+PRODUCT_BRAND := LineageOS
+PRODUCT_MODEL := LineageOS on FP1
 PRODUCT_MANUFACTURER := Fairphone
 
 # The standard kernel configuration builds a kernel too large that causes the
