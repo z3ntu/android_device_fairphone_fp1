@@ -27,6 +27,18 @@ TARGET_NO_BOOTLOADER := true
 
 TARGET_OTA_ASSERT_DEVICE := FP1,fp1
 
+# Audio
+BOARD_HAVE_PRE_KITKAT_AUDIO_BLOB := true
+BOARD_HAVE_PRE_KITKAT_AUDIO_POLICY_BLOB := true
+# dlopen failed: cannot locate symbol "_ZN7android10VectorImpl19reservedVectorImpl1Ev" referenced by "audio_policy.mt6589.so"...
+COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
+# dlopen failed: cannot locate symbol "_ZN7android11AudioSystem24getVoiceUnlockDLInstanceEv" referenced by "audio.primary.mt6589.so"...
+BOARD_NEEDS_MTKAUDIO_STUBS := true
+# load: id=audio != hmi->id=libaudio
+COMMON_GLOBAL_CFLAGS += -DDISABLE_HW_ID_MATCH_CHECK
+# probably needed?
+COMMON_GLOBAL_CFLAGS += -DMR1_AUDIO_BLOB
+
 # The bootloader of the Fairphone 1 seems to use hardcoded values for
 # kernel base, cmdline and pagesize in the boot and recovery images, as it is
 # possible to boot images with random values in those fields. However, even if

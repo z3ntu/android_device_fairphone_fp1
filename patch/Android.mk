@@ -74,6 +74,7 @@ patch-source-tree-for-fp1:
 	$(call patch-repository,frameworks/base,device/fairphone/fp1/patch/add-support-for-softwaregl.patch)
 	$(call patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/force-gles1-in-gallery-when-using-softwaregl.patch)
 	$(call patch-repository,frameworks/av,device/fairphone/fp1/patch/use-rgb-565-in-stagefright-software-renderer.patch)
+	$(call patch-repository,frameworks/av,device/fairphone/fp1/patch/stub-libmedia-audio-bits.patch)
 	$(call patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/fix-gallery-crash-when-there-is-no-bluetooth-adapter.patch)
 
 reverse-patch-source-tree-for-fp1:
@@ -82,6 +83,7 @@ reverse-patch-source-tree-for-fp1:
 	$(call reverse-patch-repository,frameworks/base,device/fairphone/fp1/patch/add-support-for-softwaregl.patch)
 	$(call reverse-patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/force-gles1-in-gallery-when-using-softwaregl.patch)
 	$(call reverse-patch-repository,frameworks/av,device/fairphone/fp1/patch/use-rgb-565-in-stagefright-software-renderer.patch)
+	$(call reverse-patch-repository,frameworks/av,device/fairphone/fp1/patch/stub-libmedia-audio-bits.patch)
 	$(call reverse-patch-repository,packages/apps/Gallery2,device/fairphone/fp1/patch/fix-gallery-crash-when-there-is-no-bluetooth-adapter.patch)
 
 abort-if-build-system-was-patched: | patch-source-tree-for-fp1
