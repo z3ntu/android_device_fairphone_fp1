@@ -25,6 +25,8 @@ TARGET_BOOTLOADER_BOARD_NAME := fp1
 
 TARGET_NO_BOOTLOADER := true
 
+TARGET_OTA_ASSERT_DEVICE := FP1,fp1
+
 # The bootloader of the Fairphone 1 seems to use hardcoded values for
 # kernel base, cmdline and pagesize in the boot and recovery images, as it is
 # possible to boot images with random values in those fields. However, even if
