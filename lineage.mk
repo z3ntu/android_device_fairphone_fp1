@@ -130,6 +130,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
 	com.android.future.usb.accessory
 
+# Bluetooth
+PRODUCT_PACKAGES += \
+	audio.a2dp.default
+
 # The file frameworks/native/data/etc/handheld_core_hardware.xml defines the
 # minimum set of features that an Android-compatible device has to provide.
 # Unfortunately, this FOSS device tree does not provide all the needed features,
@@ -150,7 +154,8 @@ PRODUCT_COPY_FILES += \
 	device/fairphone/fp1/permissions/android.software.input_methods.xml:system/etc/permissions/android.software.input_methods.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.distinct.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.distinct.xml \
 	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml
+	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
+	frameworks/native/data/etc/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml
 
 # Default Stagefright configuration files for built-in software codecs.
 PRODUCT_COPY_FILES += \

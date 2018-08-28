@@ -39,6 +39,12 @@ COMMON_GLOBAL_CFLAGS += -DDISABLE_HW_ID_MATCH_CHECK
 # probably needed?
 COMMON_GLOBAL_CFLAGS += -DMR1_AUDIO_BLOB
 
+# Bluetooth
+BOARD_HAVE_BLUETOOTH := true
+BOARD_HAVE_BLUETOOTH_MTK := true
+BOARD_BLUETOOTH_DOES_NOT_USE_RFKILL := true
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/fairphone/fp1/bluetooth
+
 # The bootloader of the Fairphone 1 seems to use hardcoded values for
 # kernel base, cmdline and pagesize in the boot and recovery images, as it is
 # possible to boot images with random values in those fields. However, even if
